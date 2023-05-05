@@ -29,7 +29,7 @@ export default function Main({ navigation }: any) {
       .then((response) => response.json())
       .then((data) => {
         const temp = data.main.temp;
-        const weather = data.weather[0].description;
+        const weather = data.weather[0].main;
         setWeahter(weather);
         setTemp(temp);
       });
@@ -47,26 +47,16 @@ export default function Main({ navigation }: any) {
       <View style={styles.container}>
         <View style={styles.city}>
           <Text style={styles.cityName}>{location}</Text>
+          <Text style={styles.temp}>{temp}˚C</Text>
+          <Text style={styles.description}>{weather}</Text>
         </View>
         <View style={styles.buttons}>
-          <Button onPress={pressOpen} title="Open"></Button>
-          <Button onPress={pressClose} title="Close"></Button>
           <Button
             title="go to Login"
             onPress={() => navigation.navigate("Login")}
           />
         </View>
-        <ScrollView
-          horizontal
-          pagingEnabled
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={styles.weather}>
-          <View style={styles.day}>
-            <Text></Text>
-            <Text style={styles.temp}>{temp}˚C</Text>
-            <Text style={styles.description}>{weather}</Text>
-          </View>
-        </ScrollView>
+        <View style={styles.day}></View>
       </View>
     </>
   );
@@ -98,6 +88,7 @@ const styles = StyleSheet.create({
     fontSize: 30,
   },
   buttons: {
+    flex: 1,
     gap: 10,
   },
 });
