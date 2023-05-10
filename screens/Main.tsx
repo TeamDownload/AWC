@@ -63,7 +63,7 @@ export default function Main({ navigation }: any) {
         </View>
         <View style={styles.buttons}></View>
         <Button
-          title="HI"
+          title="Logout"
           onPress={() => {
             navigation.navigate("Splash");
           }}></Button>
