@@ -18,25 +18,21 @@ export default function Login({ navigation }: any) {
   return (
     <>
       <View style={styles.container}>
-        <Text style={styles.logo}>AWC</Text>
         <TextInput
           style={styles.inputs}
-          placeholder="아이디"
+          placeholder="ID"
           value={userID}
           onChangeText={(userID) => setUserID(userID)}
           returnKeyType="next"></TextInput>
         <TextInput
           style={styles.inputs}
-          placeholder="비밀번호"
+          placeholder="Password"
           value={userPW}
           secureTextEntry
           onChangeText={(userPW) => setUserPW(userPW)}
           returnKeyType="next"></TextInput>
         <View style={styles.buttons}>
-          <Button title="로그인" onPress={onPressLogin}></Button>
-          <Button
-            title="회원가입"
-            onPress={() => navigation.navigate("Register")}></Button>
+          <Button title="Login" onPress={onPressLogin}></Button>
         </View>
       </View>
     </>
@@ -56,13 +52,7 @@ const styles = StyleSheet.create({
   inputs: {
     padding: 10,
     fontSize: 18,
-    borderStyle: "solid",
-    borderColor: "black",
-    borderWidth: 1,
     margin: 10,
-  },
-  logo: {
-    fontSize: 64,
-    textAlign: "center",
+    borderWidth: 1,
   },
 });
