@@ -3,9 +3,6 @@ import Main from "./screens/Main";
 import Login from "./screens/Login";
 import Register from "./screens/Register";
 import Splash from "./screens/Splash";
-import Scenario from "./screens/Scenario";
-import Setting from "./screens/Setting";
-import Footer from "./components/Footer";
 
 import "react-native-gesture-handler";
 import { NavigationContainer } from "@react-navigation/native";
@@ -27,15 +24,6 @@ export default function App() {
             name="Splash"
             component={Splash}
             options={{ headerShown: false }}></Stack.Screen>
-          <Stack.Screen
-            name="Scenario"
-            component={Scenario}
-            options={{ headerShown: false }}></Stack.Screen>
-          <Stack.Screen
-            name="Setting"
-            component={Setting}
-            options={{ headerShown: false }}></Stack.Screen>
-          <Stack.Screen name="Footer" component={Footer}></Stack.Screen>
         </Stack.Navigator>
       </NavigationContainer>
     </>

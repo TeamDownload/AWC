@@ -10,7 +10,6 @@ import Button from "../components/Button";
 import * as Location from "expo-location";
 import { useState, useEffect } from "react";
 import Weather from "../components/Weahter";
-import Footer from "../components/Footer";
 const { height, width: SCREEN_WIDTH } = Dimensions.get("window");
 const API_KEY = "0f19516defde52e001b3416c1ed2e6b2";
 export default function Main({ navigation }: any) {
@@ -18,6 +17,7 @@ export default function Main({ navigation }: any) {
   const [errorMsg, setErrorMsg] = useState("");
   const [weather, setWeahter] = useState("");
   const [temp, setTemp] = useState("");
+  const [footerTab, setFooterTab] = useState("Main");
   const getWeather = async () => {
     let { status } = await Location.requestForegroundPermissionsAsync();
     if (status !== "granted") {
@@ -51,29 +51,113 @@ export default function Main({ navigation }: any) {
   useEffect(() => {
     getWeather();
   }, []);
-  return (
-    <>
-      <View style={styles.container}>
-        <View style={styles.city}>
-          <Text style={styles.cityName}>{location}</Text>
-          <View style={styles.weather}>
-            <Text style={styles.temp}>{temp}˚C</Text>
-            <Weather weather={weather}></Weather>
+  if (footerTab == "Main") {
+    return (
+      <>
+        <View style={styles.container}>
+          <View style={styles.city}>
+            <Text style={styles.cityName}>{location}</Text>
+            <View style={styles.weather}>
+              <Text style={styles.temp}>{temp}˚C</Text>
+              <Weather weather={weather}></Weather>
+            </View>
           </View>
+          <View style={styles.buttons}></View>
+          <Button
+            title="Logout"
+            onPress={() => {
+              navigation.navigate("Splash");
+            }}></Button>
         </View>
-        <View style={styles.buttons}></View>
-        <Button
-          title="Logout"
-          onPress={() => {
-            navigation.navigate("Splash");
-          }}></Button>
-        <Footer Screen="Main"></Footer>
-      </View>
-    </>
-  );
+
+        <View style={styles.footer}>
+          <Pressable style={activeFooter} onPress={() => setFooterTab("Main")}>
+            <Text style={{ color: "white" }}>Main</Text>
+          </Pressable>
+          <Pressable
+            style={styles.footerTab}
+            onPress={() => setFooterTab("Scenario")}>
+            <Text>Scenario</Text>
+          </Pressable>
+          <Pressable
+            style={styles.footerTab}
+            onPress={() => setFooterTab("Setting")}>
+            <Text>Setting</Text>
+          </Pressable>
+        </View>
+      </>
+    );
+  } else if (footerTab == "Scenario") {
+    return (
+      <>
+        <View style={styles.container}>
+          <Text>{footerTab}</Text>
+          <View style={styles.buttons}></View>
+          <Button
+            title="Logout"
+            onPress={() => {
+              navigation.navigate("Splash");
+            }}></Button>
+        </View>
+
+        <View style={styles.footer}>
+          <Pressable
+            style={styles.footerTab}
+            onPress={() => setFooterTab("Main")}>
+            <Text>Main</Text>
+          </Pressable>
+          <Pressable
+            style={activeFooter}
+            onPress={() => setFooterTab("Scenario")}>
+            <Text style={{ color: "white" }}>Scenario</Text>
+          </Pressable>
+          <Pressable
+            style={styles.footerTab}
+            onPress={() => setFooterTab("Setting")}>
+            <Text>Setting</Text>
+          </Pressable>
+        </View>
+      </>
+    );
+  } else if (footerTab == "Setting") {
+    return (
+      <>
+        <View style={styles.container}>
+          <Text>{footerTab}</Text>
+          <View style={styles.buttons}></View>
+          <Button
+            title="Logout"
+            onPress={() => {
+              navigation.navigate("Splash");
+            }}></Button>
+        </View>
+
+        <View style={styles.footer}>
+          <Pressable
+            style={styles.footerTab}
+            onPress={() => setFooterTab("Main")}>
+            <Text>Main</Text>
+          </Pressable>
+          <Pressable
+            style={styles.footerTab}
+            onPress={() => setFooterTab("Scenario")}>
+            <Text>Scenario</Text>
+          </Pressable>
+          <Pressable
+            style={activeFooter}
+            onPress={() => setFooterTab("Setting")}>
+            <Text style={{ color: "white" }}>Setting</Text>
+          </Pressable>
+        </View>
+      </>
+    );
+  }
 }
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 16,
+  },
   footer: {
     flex: 1,
     flexDirection: "row",
@@ -85,9 +169,6 @@ const styles = StyleSheet.create({
   },
   active: {
     backgroundColor: "gray",
-  },
-  container: {
-    flex: 1,
   },
   city: {
     flex: 12,

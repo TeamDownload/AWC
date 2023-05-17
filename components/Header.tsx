@@ -2,8 +2,8 @@ import React from "react";
 import { Text, View, StyleSheet } from "react-native";
 const Header = () => {
   return (
-    <View>
-      <Text></Text>
+    <View style={style.header}>
+      <Text>Header</Text>
     </View>
   );
 };
