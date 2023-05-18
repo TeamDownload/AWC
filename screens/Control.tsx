@@ -5,7 +5,9 @@ const clickCloseButton = () =>{
 
 }
 const clickOpenButton = () =>{
-    exec();
+    exec().then(()=>{
+      console.log("Success");
+    });
 }
 
 function getData(){
