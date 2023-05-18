@@ -4,7 +4,7 @@ import { Text, View ,StyleSheet} from 'react-native'
 const clickCloseButton = () =>{
 
 }
-const clickOpenButton = () =>{
+const clickOpenButton = () =>{ 
     exec().then(()=>{
       console.log("Success");
     });
