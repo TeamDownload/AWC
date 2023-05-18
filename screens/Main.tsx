@@ -37,6 +37,7 @@ export default function Main({ navigation }: any) {
     fetch(url)
       .then((response) => response.json())
       .then((data) => {
+        console.log(data);
         const temp = data.main.temp;
         const weather = data.weather[0].description;
         setWeahter(weather);

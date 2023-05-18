@@ -1,30 +1,21 @@
-import React, { useState } from 'react'
+import React, { useState,useEffect } from 'react'
 import Button from "../components/Button"
 import { Text, View ,StyleSheet} from 'react-native'
 const clickCloseButton = () =>{
 
 }
 const clickOpenButton = () =>{ 
-    exec().then(()=>{
-      console.log("Success");
-    });
+  getData();
 }
 
-function getData(){
-    const response = fetch("https::localhost/8087/start")
-    return response.then(res=>res.json)
+const getData = async() => {
+  const url = "https:/10.0.2.2/"
+  fetch(url)
+  .then((response) => response.json())
+  .then((data) => {
+    console.log(data);
+  });
 }
-async function exec(){
-    var text;
-    try {
-      text = await getData();
-      console.log(text);
-    }
-    catch(error){
-      console.log(error);
-    }
-}
-
 
 const Control = () => {
   return (
