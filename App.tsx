@@ -3,6 +3,7 @@ import Main from "./screens/Main";
 import Login from "./screens/Login";
 import Register from "./screens/Register";
 import Splash from "./screens/Splash";
+import Control from './screens/Control';
 
 import "react-native-gesture-handler";
 import { NavigationContainer } from "@react-navigation/native";
@@ -14,6 +15,7 @@ export default function App() {
       <NavigationContainer>
         <Stack.Navigator initialRouteName="Splash">
           <Stack.Screen name="Login" component={Login} />
+          <Stack.Screen name="Control" component={Control}/>
           <Stack.Screen
             name="Main"
             component={Main}

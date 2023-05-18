@@ -6,6 +6,7 @@ export default function Login({ navigation }: any) {
   const [userID, setUserID] = useState("");
   const [userPW, setUserPW] = useState("");
   const onPressLogin = () => {
+  
     if (!userID || !userPW) {
       Alert.alert("아이디와 비밀번호를 입력해주세요");
       console.log("변경");

@@ -46,8 +46,6 @@ export default function Main({ navigation }: any) {
     setLocation([location[0].region, location[0].district].join(" "));
   };
 
-  const pressOpen = () => {};
-  const pressClose = () => {};
   useEffect(() => {
     getWeather();
   }, []);
@@ -68,6 +66,11 @@ export default function Main({ navigation }: any) {
             onPress={() => {
               navigation.navigate("Splash");
             }}></Button>
+        </View>
+        <View>
+          <Button title="Control" onPress ={() => {
+            navigation.navigate("Control");
+          }}></Button>
         </View>
 
         <View style={styles.footer}>
@@ -151,6 +154,9 @@ export default function Main({ navigation }: any) {
         </View>
       </>
     );
+  }
+  else{
+    return(<></>)
   }
 }
 
