@@ -13,7 +13,7 @@ interface data {
 const Weather = ({weather}: data) => {
   if (weather === 'Clear') {
     return <Image style={styles.Icons} source={require(ClearSky)} />;
-  } else if (weather === 'overcast clouds') {
+  } else if (weather === 'Clouds') {
     return <Image style={styles.Icons} source={require(overcastClouds)} />;
   } else if (weather === 'mist') {
     return <Image style={styles.Icons} source={require(mist)} />;

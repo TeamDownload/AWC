@@ -67,10 +67,14 @@ export default function Main({navigation}: any) {
             setTemp(data.main.temp);
             setWeahter(data.weather[0].main);
           });
-          getLocationAPI({latitude, longitude}).then(data => {
-            setLocation(data.documents[0].address_name);
-            console.log(data.documents[0].address_name);
-          });
+          getLocationAPI({latitude, longitude})
+            .then(data => {
+              setLocation(data.documents[0].address_name);
+            })
+            .catch(error => {
+              console.log(error);
+            });
+
           break;
         case RESULTS.BLOCKED:
           console.log('The permission is denied and not requestable anymore');
