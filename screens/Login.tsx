@@ -1,7 +1,10 @@
-import {TextInput, View, StyleSheet, Alert} from 'react-native';
+/* eslint-disable prettier/prettier */
+import {TextInput, View, StyleSheet, Alert, Image, Text} from 'react-native';
 import Button from '../components/Button';
 import React, {useState, useRef} from 'react';
-
+import Main from './Main';
+const LoginLogo = '../assets/LoginLogo.png';
+const MainColor = 'rgb(120,163,232)';
 export default function Login({navigation}: any) {
   const [userID, setUserID] = useState('');
   const [userPW, setUserPW] = useState('');
@@ -20,7 +23,6 @@ export default function Login({navigation}: any) {
   const onPressLogin = () => {
     if (!userID || !userPW) {
       Alert.alert('아이디와 비밀번호를 입력해주세요');
-      console.log('변경');
     } else {
       navigation.navigate('Main');
       setUserID('');
@@ -30,8 +32,10 @@ export default function Login({navigation}: any) {
   return (
     <>
       <View style={styles.container}>
+        <Image style={styles.Icons} source={require(LoginLogo)} />
         <TextInput
           style={styles.inputs}
+          placeholderTextColor={MainColor}
           placeholder="ID"
           ref={ref_input[0]}
           onSubmitEditing={() => onFocusNext(0)}
@@ -41,7 +45,8 @@ export default function Login({navigation}: any) {
         />
         <TextInput
           style={styles.inputs}
-          placeholder="Password"
+          placeholder="PW"
+          placeholderTextColor={MainColor}
           ref={ref_input[1]}
           onSubmitEditing={() => onFocusNext(1)}
           value={userPW}
@@ -66,11 +71,19 @@ const styles = StyleSheet.create({
   container: {
     justifyContent: 'center',
     height: '100%',
+    flexDirection: 'column',
+    alignItems: 'center',
   },
   inputs: {
     padding: 10,
+    width: '90%',
     fontSize: 18,
     margin: 10,
-    borderWidth: 1,
+    borderBottomWidth: 1,
+  },
+  Icons: {
+    width: 100,
+    height: 100,
+    resizeMode: 'cover',
   },
 });

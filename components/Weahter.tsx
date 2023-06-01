@@ -15,7 +15,7 @@ const Weather = ({weather}: data) => {
     return <Image style={styles.Icons} source={require(ClearSky)} />;
   } else if (weather === 'Clouds') {
     return <Image style={styles.Icons} source={require(overcastClouds)} />;
-  } else if (weather === 'mist') {
+  } else if (weather === 'Mist') {
     return <Image style={styles.Icons} source={require(mist)} />;
   } else if (weather === 'scattered clouds') {
     return <Image style={styles.Icons} source={require(Clouds)} />;
@@ -25,8 +25,8 @@ const Weather = ({weather}: data) => {
 
 const styles = StyleSheet.create({
   Icons: {
-    height: 48,
-    width: 48,
+    height: 64,
+    width: 64,
   },
 });
 export default Weather;

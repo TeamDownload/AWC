@@ -1,13 +1,16 @@
 /* eslint-disable prettier/prettier */
 import React, {useEffect, useState} from 'react';
-import {Text, View, StyleSheet} from 'react-native';
+import {Text, View, StyleSheet, Alert} from 'react-native';
 import Button from '../components/Button';
 import {check, request, PERMISSIONS, RESULTS} from 'react-native-permissions';
 import BleManager from 'react-native-ble-manager';
 import {Buffer} from 'buffer';
+import {NetworkInfo} from 'react-native-network-info';
+import AsyncStorage from '@react-native-community/async-storage';
+
 const AddDevice = () => {
   const [writeData, setWriteData] = useState(Buffer.from('test'));
-
+  const [currentWifi, setCurrentWifi] = useState('');
   const [devices, setDevices] = useState([
     {
       advertising: {
@@ -63,7 +66,6 @@ const AddDevice = () => {
     console.log(UID);
     BleManager.connect(UID)
       .then(() => {
-        // Success code
         console.log('Connected');
       })
       .catch(error => {
@@ -71,9 +73,39 @@ const AddDevice = () => {
         console.log(error);
       });
   };
+  const getWifiInfo = async () => {
+    await request(PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION).then(data =>
+      console.log('WIFI', data),
+    );
+    check(PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION)
+      .then(result => {
+        switch (result) {
+          case RESULTS.UNAVAILABLE:
+            console.log(
+              'This feature is not available (on this device / in this context)',
+            );
+            break;
+          case RESULTS.DENIED:
+            console.log(
+              'The permission has not been requested / is denied but requestable',
+            );
+            break;
+          case RESULTS.LIMITED:
+            console.log('The permission is limited: some actions are possible');
+            break;
+          case RESULTS.GRANTED:
+            console.log('The permission is Granted');
+            // Get SSID
+            NetworkInfo.getSSID().then(ssid => setCurrentWifi(ssid));
+            console.log(currentWifi);
+        }
+      })
+      .catch(error => console.log(error));
+  };
   useEffect(() => {
     getBluetoothInfo();
     scanBlueTooth();
+    getWifiInfo();
   }, []);
 
   return (
@@ -90,10 +122,11 @@ const AddDevice = () => {
                   'Discovered peripherals: ' + peripheralsArray.length,
                 );
                 setDevices(peripheralsArray);
+                console.log(peripheralsArray);
               })
-              .catch(error => console.log(error));
-
-            console.log();
+              .catch(error => {
+                console.log(error);
+              });
           }}
         />
       ) : (
@@ -112,11 +145,13 @@ const AddDevice = () => {
             />
           ))
         ) : (
-          <Text>no devices</Text>
+          <Button title="No Device" onPress={() => {}} />
         )}
         <Button
-          title="test"
+          title="기기정보보내기 (테스트)"
           onPress={() => {
+            setWriteData(Buffer.from(currentWifi));
+            console.log(writeData.toJSON().data);
             BleManager.write(
               '68:67:25:EC:07:F2',
               '6E400001-B5A3-F393-E0A9-E50E24DCCA9E',

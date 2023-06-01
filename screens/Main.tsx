@@ -33,76 +33,65 @@ export default function Main({navigation}: any) {
   const [latitude, setLatitude] = useState(0);
 
   const getWeather = async () => {
-    await request(PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION);
-    check(PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION).then(result => {
-      switch (result) {
-        case RESULTS.UNAVAILABLE:
-          console.log(
-            'This feature is not available (on this device / in this context)',
-          );
-          break;
-        case RESULTS.DENIED:
-          console.log(
-            'The permission has not been requested / is denied but requestable',
-          );
-          setGranted(false);
-          break;
-        case RESULTS.LIMITED:
-          console.log('The permission is limited: some actions are possible');
-          break;
-        case RESULTS.GRANTED:
-          Geolocation.getCurrentPosition(
-            position => {
-              setLongitude(position.coords.longitude);
-              setLatitude(position.coords.latitude);
-              setGranted(true);
-            },
-            error => {
-              console.log('Geolocation error', error);
-            },
-            {enableHighAccuracy: true, timeout: 15000, maximumAge: 10000},
-          );
+    try {
+      await request(PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION);
+      check(PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION).then(result => {
+        switch (result) {
+          case RESULTS.UNAVAILABLE:
+            console.log(
+              'This feature is not available (on this device / in this context)',
+            );
+            break;
+          case RESULTS.DENIED:
+            console.log(
+              'The permission has not been requested / is denied but requestable',
+            );
+            setGranted(false);
+            break;
+          case RESULTS.LIMITED:
+            console.log('The permission is limited: some actions are possible');
+            break;
+          case RESULTS.GRANTED:
+            Geolocation.getCurrentPosition(
+              position => {
+                setLongitude(position.coords.longitude);
+                setLatitude(position.coords.latitude);
+                setGranted(true);
+              },
+              error => {
+                console.log('Geolocation error', error);
+              },
+              {enableHighAccuracy: true, timeout: 15000, maximumAge: 10000},
+            );
 
-          getWheatherAPI({latitude, longitude}).then(data => {
-            setTemp(data.main.temp);
-            setWeahter(data.weather[0].main);
-          });
-          getLocationAPI({latitude, longitude})
-            .then(data => {
-              setLocation(data.documents[0].address_name);
-            })
-            .catch(error => {
-              console.log(error);
+            getWheatherAPI({latitude, longitude}).then(data => {
+              setTemp(data.main.temp);
+              setWeahter(data.weather[0].main);
             });
+            getLocationAPI({latitude, longitude})
+              .then(data => {
+                setLocation(data.documents[0].address_name);
+              })
+              .catch(error => {
+                console.log(error);
+              });
 
-          break;
-        case RESULTS.BLOCKED:
-          console.log('The permission is denied and not requestable anymore');
-          break;
-      }
-    });
+            break;
+          case RESULTS.BLOCKED:
+            console.log('The permission is denied and not requestable anymore');
+            break;
+        }
+      });
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const windowData = [
     {
       key: 1,
-      title: '거실',
+      title: '창문',
       img: livingRoom,
-    },
-    {
-      key: 2,
-      title: '화장실',
-      img: bathroom,
-    },
-    {
-      key: 3,
-      title: '주방',
-      img: kitchen,
-    },
-    {
-      key: 4,
-      title: '다목적실',
-      img: window,
     },
   ];
   useEffect(() => {
@@ -113,15 +102,14 @@ export default function Main({navigation}: any) {
       <>
         <View style={styles.container}>
           {granted ? (
-            <>
-              <View style={styles.cityInfo}>
-                <Text style={{fontSize: 24}}>{location}</Text>
-                <View style={styles.weather}>
-                  <Text style={styles.temp}>{temp}˚C</Text>
-                  <Weather weather={weather} />
-                </View>
+            <View style={styles.cityInfo}>
+              <Text style={styles.cityName}>{location}</Text>
+              <View style={styles.weather}>
+                <Text style={styles.temp}>{temp}˚C</Text>
+                <Weather weather={weather} />
               </View>
-            </>
+              <Button title="날씨 새로고침" onPress={getWeather} />
+            </View>
           ) : (
             <View style={styles.unGranted}>
               <Button title="위치정보 설정하기" onPress={getWeather} />
@@ -132,19 +120,24 @@ export default function Main({navigation}: any) {
           )}
 
           <View style={styles.windows}>
-            {windowData.map(data => (
-              <WindowButtons
-                key={data.key}
-                title={data.title}
-                img={data.img}
-                onPress={() => {
-                  navigation.navigate('Control');
-                }}
-              />
-            ))}
+            {windowData ? (
+              windowData.map(data => (
+                <WindowButtons
+                  key={data.key}
+                  title={data.title}
+                  img={data.img}
+                  onPress={() => {
+                    navigation.navigate('Control');
+                  }}
+                />
+              ))
+            ) : (
+              <Text style={{fontSize: 24, textAlign: 'center', width: '100%'}}>
+                기기를 등록해주세요
+              </Text>
+            )}
           </View>
           <View style={styles.buttons}>
-            <Button title="날씨 새로고침" onPress={getWeather} />
             <Button
               title="기기 등록"
               onPress={() => {
@@ -245,6 +238,8 @@ const styles = StyleSheet.create({
   windows: {
     flex: 5,
     flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
     gap: 20,
     padding: 40,
   },
@@ -261,13 +256,14 @@ const styles = StyleSheet.create({
     backgroundColor: 'gray',
   },
   cityInfo: {
-    flex: 4,
+    flex: 10,
     justifyContent: 'center',
     alignItems: 'center',
   },
   cityName: {
-    fontSize: 40,
+    fontSize: 24,
     fontWeight: '500',
+    color: 'black',
   },
   weather: {
     flexDirection: 'row',
@@ -280,9 +276,11 @@ const styles = StyleSheet.create({
   },
   temp: {
     fontSize: 40,
+    color: 'black',
   },
   description: {
     fontSize: 30,
+    color: 'black',
   },
   buttons: {
     flex: 5,

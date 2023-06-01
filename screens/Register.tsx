@@ -1,7 +1,9 @@
-import {Text, TextInput, View, StyleSheet, Alert} from 'react-native';
+/* eslint-disable prettier/prettier */
+import {Text, TextInput, View, StyleSheet, Alert, Image} from 'react-native';
 import Button from '../components/Button';
 import React, {useState, useRef, useEffect} from 'react';
 import {idCheck} from '../api/api';
+const RegisterLogo = '../assets/RegisterLogo.png';
 const Register = ({navigation}: any) => {
   const [userID, setUserID] = useState('');
   const [userPW, setUserPW] = useState('');
@@ -39,6 +41,7 @@ const Register = ({navigation}: any) => {
   return (
     <>
       <View style={styles.container}>
+        <Image style={styles.Icons} source={require(RegisterLogo)} />
         <TextInput
           style={styles.inputs}
           onSubmitEditing={() => {
@@ -100,18 +103,25 @@ const styles = StyleSheet.create({
   container: {
     justifyContent: 'center',
     height: '100%',
+    alignItems: 'center',
   },
   inputs: {
     padding: 10,
     fontSize: 18,
+    width: '80%',
     borderStyle: 'solid',
     borderColor: 'black',
-    borderWidth: 1,
+    borderBottomWidth: 1,
     margin: 10,
   },
   logo: {
     fontSize: 64,
     textAlign: 'center',
+  },
+  Icons: {
+    width: 100,
+    height: 100,
+    resizeMode: 'cover',
   },
 });
 

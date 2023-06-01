@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import React from 'react';
 import {Text, View, StyleSheet, Pressable} from 'react-native';
 
@@ -17,7 +18,7 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     paddingHorizontal: 32,
     borderRadius: 4,
-    backgroundColor: 'black',
+    backgroundColor: 'rgb(120,163,232)',
   },
   text: {
     fontSize: 16,
