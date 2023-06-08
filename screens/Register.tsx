@@ -3,6 +3,7 @@ import {Text, TextInput, View, StyleSheet, Alert, Image} from 'react-native';
 import Button from '../components/Button';
 import React, {useState, useRef, useEffect} from 'react';
 import {idCheck} from '../api/api';
+const MainColor = 'rgb(120,163,232)';
 const RegisterLogo = '../assets/RegisterLogo.png';
 const Register = ({navigation}: any) => {
   const [userID, setUserID] = useState('');
@@ -48,12 +49,14 @@ const Register = ({navigation}: any) => {
             onFocusNext(0);
           }}
           placeholder="아이디"
+          placeholderTextColor={MainColor}
           ref={ref_input[0]}
           onChangeText={userID => setUserID(userID)}
           returnKeyType="next"
         />
         <TextInput
           ref={ref_input[1]}
+          placeholderTextColor={MainColor}
           style={styles.inputs}
           onSubmitEditing={() => {
             onFocusNext(1);
@@ -65,6 +68,7 @@ const Register = ({navigation}: any) => {
         />
         <TextInput
           style={styles.inputs}
+          placeholderTextColor={MainColor}
           ref={ref_input[2]}
           placeholder="비밀번호 확인"
           onSubmitEditing={() => {
@@ -76,6 +80,7 @@ const Register = ({navigation}: any) => {
         />
         <TextInput
           style={styles.inputs}
+          placeholderTextColor={MainColor}
           ref={ref_input[3]}
           autoComplete="email"
           inputMode="email"
@@ -113,6 +118,7 @@ const styles = StyleSheet.create({
     borderColor: 'black',
     borderBottomWidth: 1,
     margin: 10,
+    color: 'black',
   },
   logo: {
     fontSize: 64,

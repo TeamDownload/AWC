@@ -7,7 +7,7 @@ import Control from './screens/Control';
 import 'react-native-gesture-handler';
 import {NavigationContainer} from '@react-navigation/native';
 import AddDevice from './screens/AddDevice';
-
+import SettingDevice from './screens/SettingDevice';
 const Stack = createStackNavigator();
 export default function App() {
   return (
@@ -17,6 +17,7 @@ export default function App() {
           <Stack.Screen name="Login" component={Login} />
           <Stack.Screen name="Control" component={Control} />
           <Stack.Screen name="기기등록" component={AddDevice} />
+          <Stack.Screen name="기기설정" component={SettingDevice} />
           <Stack.Screen
             name="Main"
             component={Main}

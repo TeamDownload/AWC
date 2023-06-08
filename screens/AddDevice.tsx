@@ -1,16 +1,16 @@
 /* eslint-disable prettier/prettier */
 import React, {useEffect, useState} from 'react';
+
 import {Text, View, StyleSheet, Alert} from 'react-native';
 import Button from '../components/Button';
 import {check, request, PERMISSIONS, RESULTS} from 'react-native-permissions';
 import BleManager from 'react-native-ble-manager';
 import {Buffer} from 'buffer';
 import {NetworkInfo} from 'react-native-network-info';
-import AsyncStorage from '@react-native-community/async-storage';
 
-const AddDevice = () => {
-  const [writeData, setWriteData] = useState(Buffer.from('test'));
-  const [currentWifi, setCurrentWifi] = useState('');
+const AddDevice = ({navigation: {navigate}}) => {
+  const [currentWifi, setCurrentWifi] = useState('Tenda_33C350');
+  const [isconnected, setIsconnected] = useState(false);
   const [devices, setDevices] = useState([
     {
       advertising: {
@@ -67,6 +67,7 @@ const AddDevice = () => {
     BleManager.connect(UID)
       .then(() => {
         console.log('Connected');
+        setIsconnected(true);
       })
       .catch(error => {
         // Failure code
@@ -109,29 +110,34 @@ const AddDevice = () => {
   }, []);
 
   return (
-    <View>
-      {ableBlueTooth ? (
-        <Button
-          title="SearchDevice"
-          onPress={() => {
-            scanBlueTooth();
-            BleManager.getDiscoveredPeripherals()
-              .then(peripheralsArray => {
-                // Success code
-                console.log(
-                  'Discovered peripherals: ' + peripheralsArray.length,
-                );
-                setDevices(peripheralsArray);
-                console.log(peripheralsArray);
-              })
-              .catch(error => {
-                console.log(error);
-              });
-          }}
-        />
-      ) : (
-        <Text>Unable connect BlueTooth</Text>
-      )}
+    <View style={styles.container}>
+      <View style={styles.header}>
+        {ableBlueTooth ? (
+          <Button
+            title="SearchDevice"
+            onPress={() => {
+              scanBlueTooth();
+              BleManager.getDiscoveredPeripherals()
+                .then(peripheralsArray => {
+                  // Success code
+                  console.log(
+                    'Discovered peripherals: ' + peripheralsArray.length,
+                  );
+                  if (peripheralsArray !== null) {
+                    setDevices(peripheralsArray);
+                  }
+
+                  console.log(peripheralsArray);
+                })
+                .catch(error => {
+                  console.log(error);
+                });
+            }}
+          />
+        ) : (
+          <Text>Unable connect BlueTooth</Text>
+        )}
+      </View>
       <View style={styles.deviceButton}>
         {devices ? (
           devices.map(data => (
@@ -139,37 +145,19 @@ const AddDevice = () => {
               key={data.id}
               title={data.advertising.localName}
               onPress={() => {
-                console.log(data);
                 connectBlueTooth(data.id);
+                navigate('기기설정', {
+                  id: data.id,
+                  name: data.name,
+                  isconnected: isconnected,
+                  wifi: currentWifi,
+                });
               }}
             />
           ))
         ) : (
-          <Button title="No Device" onPress={() => {}} />
+          <Text>No Device</Text>
         )}
-        <Button
-          title="기기정보보내기 (테스트)"
-          onPress={() => {
-            setWriteData(Buffer.from(currentWifi));
-            console.log(writeData.toJSON().data);
-            BleManager.write(
-              '68:67:25:EC:07:F2',
-              '6E400001-B5A3-F393-E0A9-E50E24DCCA9E',
-              '6E400002-B5A3-F393-E0A9-E50E24DCCA9E',
-              // encode & extract raw `number[]`.
-              // Each number should be in the 0-255 range as it is converted from a valid byte.
-              writeData.toJSON().data,
-            )
-              .then(() => {
-                // Success code
-                console.log('Write: ' + writeData);
-              })
-              .catch(error => {
-                // Failure code
-                console.log(error);
-              });
-          }}
-        />
       </View>
     </View>
   );
@@ -177,6 +165,16 @@ const AddDevice = () => {
 const styles = StyleSheet.create({
   deviceButton: {
     flexDirection: 'column',
+    justifyContent: 'center',
+    flex: 10,
+  },
+  header: {
+    flex: 1,
+    alignItems: 'center',
+    padding: 30,
+  },
+  container: {
+    flex: 1,
   },
 });
 export default AddDevice;

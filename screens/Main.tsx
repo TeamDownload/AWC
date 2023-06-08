@@ -1,23 +1,16 @@
 /* eslint-disable prettier/prettier */
 /* eslint-disable react-native/no-inline-styles */
 /* eslint-disable react/react-in-jsx-scope */
-import {
-  StyleSheet,
-  Text,
-  View,
-  Dimensions,
-  Pressable,
-  Linking,
-} from 'react-native';
+import {StyleSheet, Text, View, Dimensions, Pressable} from 'react-native';
 import Button from '../components/Button';
 import {useState, useEffect} from 'react';
 import Weather from '../components/Weahter';
 import WindowButtons from '../components/WindowButtons';
 import Geolocation from 'react-native-geolocation-service';
-import {Alert} from 'react-native';
 import {check, request, PERMISSIONS, RESULTS} from 'react-native-permissions';
 import {getWheatherAPI} from '../api/api';
 import {getLocationAPI} from '../api/api';
+import {HTTPGetData} from '../api/api';
 const livingRoom = require('../assets/ico/livingRoom.png');
 const kitchen = require('../assets/ico/kitchen.png');
 const window = require('../assets/ico/window.png');
@@ -33,58 +26,37 @@ export default function Main({navigation}: any) {
   const [latitude, setLatitude] = useState(0);
 
   const getWeather = async () => {
-    try {
-      await request(PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION);
-      check(PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION).then(result => {
-        switch (result) {
-          case RESULTS.UNAVAILABLE:
-            console.log(
-              'This feature is not available (on this device / in this context)',
-            );
-            break;
-          case RESULTS.DENIED:
-            console.log(
-              'The permission has not been requested / is denied but requestable',
-            );
-            setGranted(false);
-            break;
-          case RESULTS.LIMITED:
-            console.log('The permission is limited: some actions are possible');
-            break;
-          case RESULTS.GRANTED:
-            Geolocation.getCurrentPosition(
-              position => {
-                setLongitude(position.coords.longitude);
-                setLatitude(position.coords.latitude);
-                setGranted(true);
-              },
-              error => {
-                console.log('Geolocation error', error);
-              },
-              {enableHighAccuracy: true, timeout: 15000, maximumAge: 10000},
-            );
+    await request(PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION);
+    check(PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION).then(result => {
+      switch (result) {
+        case RESULTS.GRANTED:
+          Geolocation.getCurrentPosition(
+            position => {
+              setLongitude(position.coords.longitude);
+              setLatitude(position.coords.latitude);
+              setGranted(true);
+            },
+            error => {
+              console.log('Geolocation error', error);
+            },
+            {enableHighAccuracy: true, timeout: 15000, maximumAge: 10000},
+          );
 
-            getWheatherAPI({latitude, longitude}).then(data => {
-              setTemp(data.main.temp);
-              setWeahter(data.weather[0].main);
+          getWheatherAPI({latitude, longitude}).then(data => {
+            setTemp(data.main.temp);
+            setWeahter(data.weather[0].main);
+          });
+          getLocationAPI({latitude, longitude})
+            .then(data => {
+              setLocation(data.documents[0].address_name);
+            })
+            .catch(error => {
+              console.log(error);
             });
-            getLocationAPI({latitude, longitude})
-              .then(data => {
-                setLocation(data.documents[0].address_name);
-              })
-              .catch(error => {
-                console.log(error);
-              });
 
-            break;
-          case RESULTS.BLOCKED:
-            console.log('The permission is denied and not requestable anymore');
-            break;
-        }
-      });
-    } catch (error) {
-      console.log(error);
-    }
+          break;
+      }
+    });
   };
 
   const windowData = [
@@ -127,7 +99,9 @@ export default function Main({navigation}: any) {
                   title={data.title}
                   img={data.img}
                   onPress={() => {
-                    navigation.navigate('Control');
+                    navigation.navigate('Control', {
+                      name: data.title,
+                    });
                   }}
                 />
               ))
@@ -153,40 +127,8 @@ export default function Main({navigation}: any) {
           </Pressable>
           <Pressable
             style={styles.footerTab}
-            onPress={() => setFooterTab('Scenario')}>
-            <Text>Scenario</Text>
-          </Pressable>
-          <Pressable
-            style={styles.footerTab}
             onPress={() => setFooterTab('Setting')}>
-            <Text>Setting</Text>
-          </Pressable>
-        </View>
-      </>
-    );
-  } else if (footerTab == 'Scenario') {
-    return (
-      <>
-        <View style={styles.container}>
-          <Text>{footerTab}</Text>
-          <View style={styles.buttons} />
-        </View>
-
-        <View style={styles.footer}>
-          <Pressable
-            style={styles.footerTab}
-            onPress={() => setFooterTab('Main')}>
-            <Text>Main</Text>
-          </Pressable>
-          <Pressable
-            style={activeFooter}
-            onPress={() => setFooterTab('Scenario')}>
-            <Text style={{color: 'white'}}>Scenario</Text>
-          </Pressable>
-          <Pressable
-            style={styles.footerTab}
-            onPress={() => setFooterTab('Setting')}>
-            <Text>Setting</Text>
+            <Text style={{color: 'black'}}>Setting</Text>
           </Pressable>
         </View>
       </>
@@ -195,12 +137,17 @@ export default function Main({navigation}: any) {
     return (
       <>
         <View style={styles.container}>
-          <Text>{footerTab}</Text>
           <View style={styles.buttons}>
             <Button
               title="Logout"
               onPress={() => {
                 navigation.navigate('Splash');
+              }}
+            />
+            <Button
+              title="OPEN"
+              onPress={() => {
+                HTTPGetData();
               }}
             />
           </View>
@@ -210,12 +157,7 @@ export default function Main({navigation}: any) {
           <Pressable
             style={styles.footerTab}
             onPress={() => setFooterTab('Main')}>
-            <Text>Main</Text>
-          </Pressable>
-          <Pressable
-            style={styles.footerTab}
-            onPress={() => setFooterTab('Scenario')}>
-            <Text>Scenario</Text>
+            <Text style={{color: 'black'}}>Main</Text>
           </Pressable>
           <Pressable
             style={activeFooter}

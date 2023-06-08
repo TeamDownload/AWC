@@ -79,6 +79,7 @@ const styles = StyleSheet.create({
     width: '90%',
     fontSize: 18,
     margin: 10,
+    color: 'black',
     borderBottomWidth: 1,
   },
   Icons: {
